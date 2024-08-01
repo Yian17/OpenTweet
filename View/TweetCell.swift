@@ -85,7 +85,7 @@ class TweetCell: UITableViewCell {
     
     func configure(with tweetViewmodel: TweetViewmodel) {
         authorLabel.text = tweetViewmodel.authorName
-        contentLabel.text = tweetViewmodel.content
+        contentLabel.attributedText = tweetViewmodel.attributedContent()
         dateLabel.text = tweetViewmodel.dateString
         
         /*

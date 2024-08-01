@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class TimelineViewmodel {
     private var tweets: [Tweetmodel] = []
@@ -46,8 +47,8 @@ class TweetViewmodel {
         tweet.author
     }
     
-    var content: String {
-        tweet.content
+    func attributedContent() -> NSAttributedString {
+        tweet.content.applyingTweetStyling()
     }
     
     var dateString: String {
