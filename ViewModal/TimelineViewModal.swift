@@ -32,6 +32,18 @@ class TimelineViewModel {
             tweets = timeline.tweets
         }
     }
+
+    func thread(for tweet: TweetModel) -> [TweetModel] {
+        if tweet.inReplyTo != nil {
+            // If it's a reply, find the tweet it's replying to
+            let parent = tweets.filter { $0.id == tweet.inReplyTo }
+            return parent + [tweet]
+        } else {
+            // If it's a root tweet, return it and all its direct replies
+            let replies = tweets.filter { $0.inReplyTo == tweet.id }
+            return [tweet] + replies
+        }
+    }
 }
 
 class TweetViewModel {

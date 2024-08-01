@@ -21,6 +21,7 @@
 		EA0A05352C59BE5300B8DC83 /* TweetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A05342C59BE5300B8DC83 /* TweetCell.swift */; };
 		EA0A05382C5ADDA600B8DC83 /* String+Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A05372C5ADDA600B8DC83 /* String+Style.swift */; };
 		EA0A053A2C5BE08300B8DC83 /* TweetViewModalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A05392C5BE08300B8DC83 /* TweetViewModalTests.swift */; };
+		EA0A053C2C5C2E2A00B8DC83 /* ThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0A053B2C5C2E2A00B8DC83 /* ThreadViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		EA0A05342C59BE5300B8DC83 /* TweetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetCell.swift; sourceTree = "<group>"; };
 		EA0A05372C5ADDA600B8DC83 /* String+Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Style.swift"; sourceTree = "<group>"; };
 		EA0A05392C5BE08300B8DC83 /* TweetViewModalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TweetViewModalTests.swift; sourceTree = "<group>"; };
+		EA0A053B2C5C2E2A00B8DC83 /* ThreadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 			isa = PBXGroup;
 			children = (
 				009C4C6D1D9F0CD600F0BC6C /* TimelineViewController.swift */,
+				EA0A053B2C5C2E2A00B8DC83 /* ThreadViewController.swift */,
 				EA0A05342C59BE5300B8DC83 /* TweetCell.swift */,
 			);
 			path = View;
@@ -333,6 +336,7 @@
 				EA0A05312C5990AC00B8DC83 /* TimelineModel.swift in Sources */,
 				009C4C6C1D9F0CD600F0BC6C /* AppDelegate.swift in Sources */,
 				EA0A05332C59925100B8DC83 /* TimelineViewModal.swift in Sources */,
+				EA0A053C2C5C2E2A00B8DC83 /* ThreadViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

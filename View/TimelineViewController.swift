@@ -72,6 +72,12 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
             cell.setHighlighted(true, animated: true)
         }
+        
+        let currentTweet = viewmodel.tweet(at: indexPath.row).tweet
+        let thread = viewmodel.thread(for: currentTweet)
+        
+        let threadViewController = ThreadViewController(thread: thread)
+        navigationController?.pushViewController(threadViewController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
