@@ -21,7 +21,7 @@ class TimelineViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
         view.backgroundColor = .white
         tableView.dataSource = self
         tableView.delegate = self
@@ -31,12 +31,12 @@ class TimelineViewController: UIViewController {
         setUpConstraints()
     }
     
-    func buildUI() {
+    private func buildUI() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
     }
     
-    func setUpConstraints() {
+    private func setUpConstraints() {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -45,7 +45,7 @@ class TimelineViewController: UIViewController {
         ])
     }
     
-    func fetchTimeline() {
+    private func fetchTimeline() {
         viewmodel.fetchTimeline()
     }
 
@@ -66,5 +66,17 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.configure(with: tweetViewModel)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
+            cell.setHighlighted(true, animated: true)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
+            cell.setHighlighted(false, animated: true)
+        }
     }
 }

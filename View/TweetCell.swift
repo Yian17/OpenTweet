@@ -31,12 +31,12 @@ class TweetCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func commonInit() {
+    private func commonInit() {
         buildUI()
         setUpConstraints()
     }
     
-    func buildUI() {
+    private func buildUI() {
         avatarView.contentMode = .scaleAspectFill
         avatarView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
         avatarView.layer.cornerRadius = avatarView.bounds.height/2
@@ -61,7 +61,7 @@ class TweetCell: UITableViewCell {
         contentView.addSubview(dateLabel)
     }
     
-    func setUpConstraints() {
+    private func setUpConstraints() {
         NSLayoutConstraint.activate([
             avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
@@ -107,9 +107,32 @@ class TweetCell: UITableViewCell {
         }
     }
     
-    func setDefaultAvatar() {
+    private func setDefaultAvatar() {
         self.avatarView.image = UIImage(named: Constant.blankProfileImage)
         self.avatarView.tintColor = .white
         self.avatarView.backgroundColor = .gray
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        if highlighted {
+            highlight()
+        } else {
+            unhighlight()
+        }
+    }
+    
+    private func highlight() {
+        UIView.animate(withDuration: 0.3) {
+            self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+            self.contentView.backgroundColor = UIColor.systemGray6
+        }
+    }
+    
+    private func unhighlight() {
+        UIView.animate(withDuration: 0.3) {
+            self.transform = .identity
+            self.contentView.backgroundColor = .clear
+        }
     }
 }
