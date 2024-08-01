@@ -16,11 +16,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
-//        window = UIWindow(frame: UIScreen.main.bounds)
-//        let tweetListViewController = TimelineViewController()
-//        let navigationController = UINavigationController(rootViewController: tweetListViewController)
-//        window?.rootViewController = navigationController
-//        window?.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.main.bounds)
+        let timelineViewController = TimelineViewController()
+        timelineViewController.title = "x"
+        let navigationController = UINavigationController(rootViewController: timelineViewController)
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
         return true
 	}
 
