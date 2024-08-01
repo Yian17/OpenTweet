@@ -83,17 +83,17 @@ class TweetCell: UITableViewCell {
         ])
     }
     
-    func configure(with tweetViewmodel: TweetViewmodel) {
-        authorLabel.text = tweetViewmodel.authorName
-        contentLabel.attributedText = tweetViewmodel.attributedContent()
-        dateLabel.text = tweetViewmodel.dateString
+    func configure(with tweetViewModel: TweetViewModel) {
+        authorLabel.text = tweetViewModel.authorName
+        contentLabel.attributedText = tweetViewModel.attributedContent()
+        dateLabel.text = tweetViewModel.dateString
         
         /*
          There is no retain cycle currently, as tweetViewModel is instantiated within a
          function and its lifecycle ends when the function completes.
          Adding [weak self] to ensure safety in case of future changes.
          */
-        tweetViewmodel.fetchAvatar { [weak self] result in
+        tweetViewModel.fetchAvatar { [weak self] result in
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {

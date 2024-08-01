@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-class TimelineViewmodel {
-    private var tweets: [Tweetmodel] = []
+class TimelineViewModel {
+    var tweets: [TweetModel] = []
     
     private let serviceProvider: ServiceProtocol
     
@@ -18,8 +18,8 @@ class TimelineViewmodel {
         self.serviceProvider = dataProvider
     }
     
-    func tweet(at index: Int) -> TweetViewmodel {
-        return TweetViewmodel(tweet: tweets[index])
+    func tweet(at index: Int) -> TweetViewModel {
+        return TweetViewModel(tweet: tweets[index])
     }
     
     func getNumberOfRowsInSection() -> Int {
@@ -34,11 +34,13 @@ class TimelineViewmodel {
     }
 }
 
-class TweetViewmodel {
+class TweetViewModel {
+    // Error message used for unit testing
+    var errorMessage = ""
     private let serviceProvider: ServiceProtocol
-    let tweet: Tweetmodel
+    let tweet: TweetModel
     
-    init(tweet: Tweetmodel, dataProvier: ServiceProtocol = Service()) {
+    init(tweet: TweetModel, dataProvier: ServiceProtocol = Service()) {
         self.tweet = tweet
         self.serviceProvider = dataProvier
     }
@@ -64,10 +66,35 @@ class TweetViewmodel {
     
     func fetchAvatar(completion: @escaping (Result<Data, Error>) -> Void) {
         guard let urlString = tweet.avatar else {
+            self.setErrorMessage(error: RequestError.urlError)
             completion(.failure(RequestError.urlError))
             return
         }
-        
-        serviceProvider.fetchImage(from: urlString, completion: completion)
+        serviceProvider.fetchImage(from: urlString) { [weak self] result in
+            switch result {
+            case .failure(let error):
+                self?.setErrorMessage(error: error)
+                completion(.failure(error))
+            case .success(let data):
+                completion(.success(data))
+            }
+        }
+    }
+    
+    func setErrorMessage(error:Error) {
+        switch error {
+        case RequestError.decodeError:
+            errorMessage = "decodeError"
+        case RequestError.noData:
+            errorMessage = "noData"
+        case RequestError.urlError:
+            errorMessage = "urlError"
+        case RequestError.noResponse:
+            errorMessage = "noResponseFile"
+        case RequestError.serializeError:
+            errorMessage = "serializeError"
+        default:
+            errorMessage = ""
+        }
     }
 }

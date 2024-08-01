@@ -14,7 +14,6 @@ enum RequestError: Error {
     case decodeError
     case serializeError
     case noResponse
-    case dataConversionFailed
 }
 
 protocol ServiceProtocol {

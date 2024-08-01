@@ -9,7 +9,7 @@
 import Foundation
 
 struct Timelinemodel: Codable {
-    let tweets: [Tweetmodel]
+    let tweets: [TweetModel]
     
     enum CodingKeys: String, CodingKey {
         case tweets = "timeline"

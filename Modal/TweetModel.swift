@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Tweetmodel: Codable {
+struct TweetModel: Codable {
     let id: String
     let author: String
     let content: String

@@ -9,7 +9,7 @@
 import UIKit
 
 class TimelineViewController: UIViewController {
-    let viewmodel = TimelineViewmodel()
+    let viewmodel = TimelineViewModel()
     
     private var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
