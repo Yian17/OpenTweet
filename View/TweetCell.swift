@@ -11,81 +11,107 @@ import UIKit
 
 class TweetCell: UITableViewCell {
     
+    // MARK: Constants
     struct Constant {
         static let reuseIdentifier = "TweetCell"
         static let blankProfileImage = "blankProfile"
     }
-        
-    private var avatarView = UIImageView()
-    private let authorLabel = UILabel()
-    private let contentLabel = UILabel()
-    private let dateLabel = UILabel()
     
+    // Constants for view layout and animation
+    private struct ViewConstants {
+        static let sidePadding = CGFloat(16)
+        static let scaleFactor = CGFloat(1.05)
+        static let ipadScaleXFactor = CGFloat(1.02)
+        static let verticalStackSpacing = CGFloat(8)
+        static let horizontalStackSpacing = CGFloat(12)
+        static let imageSize = CGFloat(40)
+        static let animationDuration = 0.3
+    }
+
+    // MARK: UI Components
+    private let avatarView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = ViewConstants.imageSize/2
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private let authorLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 18)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let contentTextView: UITextView = {
+        let textView = UITextView()
+        textView.isScrollEnabled = false
+        textView.isEditable = false
+        textView.backgroundColor = .clear
+        textView.textContainerInset = .zero
+        textView.dataDetectorTypes = .link
+        textView.textContainer.lineFragmentPadding = 0
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        return textView
+    }()
+    
+    private let dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = .gray
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var verticalStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [authorLabel, contentTextView, dateLabel])
+        stackView.axis = .vertical
+        stackView.spacing = ViewConstants.verticalStackSpacing
+        stackView.alignment = .leading
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private lazy var horizontalStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [avatarView, verticalStackView])
+        stackView.axis = .horizontal
+        stackView.spacing = ViewConstants.horizontalStackSpacing
+        stackView.alignment = .leading
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    // MARK: Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        commonInit()
+        buildUIAndSetUpConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func commonInit() {
-        buildUI()
-        setUpConstraints()
-    }
-    
-    private func buildUI() {
-        avatarView.contentMode = .scaleAspectFill
-        avatarView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        avatarView.layer.cornerRadius = avatarView.bounds.height/2
-        avatarView.clipsToBounds = true
-        avatarView.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        authorLabel.font = UIFont.boldSystemFont(ofSize: 16)
-        authorLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentLabel.font = UIFont.systemFont(ofSize: 14)
-        contentLabel.numberOfLines = 0
-        contentLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        dateLabel.font = UIFont.systemFont(ofSize: 12)
-        dateLabel.textColor = .gray
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        contentView.addSubview(avatarView)
-        contentView.addSubview(authorLabel)
-        contentView.addSubview(contentLabel)
-        contentView.addSubview(dateLabel)
-    }
-    
-    private func setUpConstraints() {
+    // MARK: View Setup
+    private func buildUIAndSetUpConstraints() {
+        contentView.addSubview(horizontalStackView)
+                
         NSLayoutConstraint.activate([
-            avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            avatarView.widthAnchor.constraint(equalToConstant: avatarView.frame.width),
-            avatarView.heightAnchor.constraint(equalToConstant: avatarView.frame.height),
+            horizontalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: ViewConstants.sidePadding),
+            horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: ViewConstants.sidePadding),
+            horizontalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -ViewConstants.sidePadding),
+            horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -ViewConstants.sidePadding),
             
-            authorLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            authorLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 16),
-            authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-        
-            contentLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 8),
-            contentLabel.leadingAnchor.constraint(equalTo: authorLabel.leadingAnchor),
-            contentLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                        
-            dateLabel.topAnchor.constraint(equalTo: contentLabel.bottomAnchor, constant: 8),
-            dateLabel.leadingAnchor.constraint(equalTo: authorLabel.leadingAnchor),
-            dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            avatarView.widthAnchor.constraint(equalToConstant: ViewConstants.imageSize),
+            avatarView.heightAnchor.constraint(equalToConstant: ViewConstants.imageSize)
         ])
     }
     
     func configure(with tweetViewModel: TweetViewModel) {
         authorLabel.text = tweetViewModel.authorName
-        contentLabel.attributedText = tweetViewModel.attributedContent()
+        contentTextView.attributedText = tweetViewModel.attributedContent(fontSize: 16)
         dateLabel.text = tweetViewModel.dateString
         
         /*
@@ -105,6 +131,9 @@ class TweetCell: UITableViewCell {
                 }
             }
         }
+        self.isAccessibilityElement = true
+        self.accessibilityLabel = tweetViewModel.accessibilityLabel
+        self.accessibilityHint = tweetViewModel.accessibilityHint
     }
     
     private func setDefaultAvatar() {
@@ -123,15 +152,15 @@ class TweetCell: UITableViewCell {
     }
     
     private func highlight() {
-        UIView.animate(withDuration: 0.3) {
-            let scaleFactor: CGFloat = self.isIpad ? 1.02 : 1.05
-            self.transform = CGAffineTransform(scaleX: scaleFactor, y: 1.05)
+        UIView.animate(withDuration: ViewConstants.animationDuration) {
+            let scaleFactor: CGFloat = self.isIpad ? ViewConstants.ipadScaleXFactor : ViewConstants.scaleFactor
+            self.transform = CGAffineTransform(scaleX: scaleFactor, y: ViewConstants.scaleFactor)
             self.contentView.backgroundColor = UIColor.systemGray6
         }
     }
     
     private func unhighlight() {
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: ViewConstants.animationDuration) {
             self.transform = .identity
             self.contentView.backgroundColor = .clear
         }

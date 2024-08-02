@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Timelinemodel: Codable {
+struct TimelineModel: Codable {
     let tweets: [TweetModel]
     
     enum CodingKeys: String, CodingKey {
