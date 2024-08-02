@@ -124,7 +124,8 @@ class TweetCell: UITableViewCell {
     
     private func highlight() {
         UIView.animate(withDuration: 0.3) {
-            self.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+            let scaleFactor: CGFloat = self.isIpad ? 1.02 : 1.05
+            self.transform = CGAffineTransform(scaleX: scaleFactor, y: 1.05)
             self.contentView.backgroundColor = UIColor.systemGray6
         }
     }
@@ -134,5 +135,9 @@ class TweetCell: UITableViewCell {
             self.transform = .identity
             self.contentView.backgroundColor = .clear
         }
+    }
+    
+    private var isIpad: Bool {
+        return UIDevice.current.userInterfaceIdiom == .pad
     }
 }

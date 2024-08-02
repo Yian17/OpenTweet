@@ -31,6 +31,13 @@ class TimelineViewController: UIViewController {
         setUpConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let path = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: path, animated: true)
+        }
+    }
+    
     private func buildUI() {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
@@ -57,7 +64,6 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TweetCell.Constant.reuseIdentifier, for: indexPath) as? TweetCell else {
             return UITableViewCell()
         }
@@ -69,10 +75,6 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
-            cell.setHighlighted(true, animated: true)
-        }
-        
         let currentTweet = viewmodel.tweet(at: indexPath.row).tweet
         let thread = viewmodel.thread(for: currentTweet)
         
@@ -80,7 +82,13 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
         navigationController?.pushViewController(threadViewController, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
+            cell.setHighlighted(true, animated: true)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? TweetCell {
             cell.setHighlighted(false, animated: true)
         }
