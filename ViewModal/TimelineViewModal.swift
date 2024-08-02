@@ -9,30 +9,42 @@
 import Foundation
 import UIKit
 
+// MARK: - TimelineViewModel
 class TimelineViewModel {
+    /// Array of tweets in the timeline
     var tweets: [TweetModel] = []
     
     private let serviceProvider: ServiceProtocol
     
+    /// Initializes the view model with a data provider
+    /// - Parameter dataProvider: The service to use for fetching data
     init(dataProvider: ServiceProtocol = Service()) {
         self.serviceProvider = dataProvider
     }
     
-    func tweet(at index: Int) -> TweetViewModel {
-        return TweetViewModel(tweet: tweets[index])
+    /// Retrieves a specific tweet from the timeline
+    /// - Parameter index: The index of the tweet
+    /// - Returns: The TweetModel at the specified index
+    func tweet(at index: Int) -> TweetModel {
+        return tweets[index]
     }
     
+    /// Returns the number of tweets in the timeline
+    /// - Returns: The count of tweets
     func getNumberOfRowsInSection() -> Int {
         return tweets.count
     }
     
+    /// Fetches the timeline of tweets from the service provider
     func fetchTimeline() {
         if let timeline = serviceProvider.fetchTweets() {
-            print(timeline)
             tweets = timeline.tweets
         }
     }
 
+    /// Returns an array of tweets representing a thread, including the given tweet and its replies or parent
+    /// - Parameter tweet: The tweet to get the thread for
+    /// - Returns: An array of tweets in the thread
     func thread(for tweet: TweetModel) -> [TweetModel] {
         if tweet.inReplyTo != nil {
             // If it's a reply, find the tweet it's replying to
@@ -46,25 +58,37 @@ class TimelineViewModel {
     }
 }
 
+// MARK: - TweetViewModel
 class TweetViewModel {
     // Error message used for unit testing
     var errorMessage = ""
     private let serviceProvider: ServiceProtocol
+    var isInTimeline: Bool
     let tweet: TweetModel
     
-    init(tweet: TweetModel, dataProvier: ServiceProtocol = Service()) {
+    /// Initializes the view model with a tweet and service provider
+    /// - Parameters:
+    ///   - tweet: The tweet model
+    ///   - isInTimeline: Whether the tweet is in the timeline view
+    ///   - dataProvider: The service to use for fetching data
+    init(tweet: TweetModel, isInTimeline: Bool = false, dataProvier: ServiceProtocol = Service()) {
         self.tweet = tweet
         self.serviceProvider = dataProvier
+        self.isInTimeline = isInTimeline
     }
     
     var authorName: String {
         tweet.author
     }
     
-    func attributedContent() -> NSAttributedString {
-        tweet.content.applyingTweetStyling()
+    /// Returns an attributed string of the tweet content with highlighted mentions and links
+    /// - Parameter fontSize: The font size to use
+    /// - Returns: An attributed string of the tweet content
+    func attributedContent(fontSize: CGFloat = 14) -> NSAttributedString {
+        tweet.content.applyingTweetStyling(fontSize: fontSize)
     }
     
+    /// Formats the tweet's date string
     var dateString: String {
         let isoDateFormatter = ISO8601DateFormatter()
         if let date = isoDateFormatter.date(from: tweet.date) {
@@ -76,6 +100,16 @@ class TweetViewModel {
         }
     }
     
+    var accessibilityLabel: String {
+        return "\(authorName) tweeted: \(tweet.content). Posted on \(dateString)"
+    }
+    
+    var accessibilityHint: String? {
+        return isInTimeline ? "Double tap to view the thread" : nil
+    }
+    
+    /// Fetches the avatar image for the tweet's author
+    /// - Parameter completion: A closure to call with the result of the fetch
     func fetchAvatar(completion: @escaping (Result<Data, Error>) -> Void) {
         guard let urlString = tweet.avatar else {
             self.setErrorMessage(error: RequestError.urlError)
@@ -93,7 +127,7 @@ class TweetViewModel {
         }
     }
     
-    func setErrorMessage(error:Error) {
+    private func setErrorMessage(error:Error) {
         switch error {
         case RequestError.decodeError:
             errorMessage = "decodeError"

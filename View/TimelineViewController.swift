@@ -9,9 +9,17 @@
 import UIKit
 
 class TimelineViewController: UIViewController {
+    
+    // MARK: Constants
+    struct Constant {
+        static let viewControllerAccessibilityLabel = "Home Feed of Tweets"
+        static let backButtonString = "Back"
+        static let backButtonAccessibilityLabel = "Back to Home Feed"
+    }
+    
     let viewmodel = TimelineViewModel()
     
-    private var tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.estimatedRowHeight = 100
         tableView.rowHeight = UITableView.automaticDimension
@@ -19,26 +27,33 @@ class TimelineViewController: UIViewController {
         return tableView
     }()
     
+    // MARK: Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
         tableView.dataSource = self
         tableView.delegate = self
         
         fetchTimeline()
         buildUI()
         setUpConstraints()
+        setupNavigationBackButton()
+        
+        // Set accessibility label for the view controller
+        self.accessibilityLabel = Constant.viewControllerAccessibilityLabel
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // Deselect the previously selected row when returning to this view
         if let path = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: path, animated: true)
         }
     }
     
+    // MARK: View Setup
     private func buildUI() {
+        view.backgroundColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
     }
@@ -55,9 +70,15 @@ class TimelineViewController: UIViewController {
     private func fetchTimeline() {
         viewmodel.fetchTimeline()
     }
+    
+    private func setupNavigationBackButton() {
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: Constant.backButtonString, style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.accessibilityLabel = Constant.backButtonAccessibilityLabel
+    }
 
 }
 
+// MARK: - Table Delegate and DataSource
 extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewmodel.getNumberOfRowsInSection()
@@ -68,16 +89,17 @@ extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         
-        let tweetViewModel = viewmodel.tweet(at: indexPath.row)
+        let tweetViewModel = TweetViewModel(tweet: viewmodel.tweet(at: indexPath.row), isInTimeline: true)
         
         cell.configure(with: tweetViewModel)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let currentTweet = viewmodel.tweet(at: indexPath.row).tweet
+        let currentTweet = viewmodel.tweet(at: indexPath.row)
         let thread = viewmodel.thread(for: currentTweet)
         
+        // pushing a ThreadViewController for the selected tweet
         let threadViewController = ThreadViewController(thread: thread)
         navigationController?.pushViewController(threadViewController, animated: true)
     }

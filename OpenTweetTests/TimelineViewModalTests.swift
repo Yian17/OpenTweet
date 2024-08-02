@@ -48,10 +48,10 @@ class TimelineViewModelTests: XCTestCase {
 class MockService: ServiceProtocol {
     var mockError: Error?
     
-    func fetchTweets() -> Timelinemodel? {
+    func fetchTweets() -> TimelineModel? {
         if let path = Bundle.main.path(forResource: "timeline", ofType: "json"),
         let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-        let dataObject = try? JSONDecoder().decode(Timelinemodel.self, from: data) {
+        let dataObject = try? JSONDecoder().decode(TimelineModel.self, from: data) {
             return dataObject
         }
         return nil

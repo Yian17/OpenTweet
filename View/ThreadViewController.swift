@@ -11,7 +11,8 @@ import UIKit
 
 class ThreadViewController: UIViewController {
     
-    private var thread: [TweetModel]
+    // The array of tweets that make up the thread
+    private let thread: [TweetModel]
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.estimatedRowHeight = 100
@@ -20,6 +21,7 @@ class ThreadViewController: UIViewController {
         return tableView
     }()
     
+    // MARK: Init
     init(thread: [TweetModel]) {
         self.thread = thread
         super.init(nibName: nil, bundle: nil)
@@ -29,6 +31,7 @@ class ThreadViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -39,6 +42,7 @@ class ThreadViewController: UIViewController {
         setUpConstraint()
     }
     
+    // MARK: View Setup
     private func buildUI() {
         view.backgroundColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +59,7 @@ class ThreadViewController: UIViewController {
     }
 }
 
+// MARK: - Table Delegate and DataSource
 extension ThreadViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         thread.count

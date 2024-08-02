@@ -9,22 +9,29 @@
 import Foundation
 
 enum RequestError: Error {
-    case urlError
-    case noData
-    case decodeError
-    case serializeError
-    case noResponse
+    case urlError          // Invalid URL
+    case noData            // No data received
+    case decodeError       // Error decoding the received data
+    case serializeError    // Error serializing the request body
+    case noResponse        // No response received
 }
 
 protocol ServiceProtocol {
-    func fetchTweets() -> Timelinemodel?
+    /// Fetches tweets from a local JSON file
+    /// - Returns: A TimelineModel object if successful, nil otherwise
+    func fetchTweets() -> TimelineModel?
+    
+    /// Fetches an image from a given URL
+    /// - Parameters:
+    ///   - urlString: The URL of the image as a string
+    ///   - completion: A closure to be called with the result of the fetch
     func fetchImage(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void)
 }
 
 class Service: ServiceProtocol {
     
     struct Constant {
-        static let tweetFileName = "timeline"
+        static let tweetFileName = "timeline" // Name of the local JSON file containing tweets
     }
     
     enum RequestType: String {
@@ -40,6 +47,13 @@ class Service: ServiceProtocol {
         self.urlDataSession = urlDataSession
     }
     
+    /// Performs a generic network request
+    /// - Parameters:
+    ///   - urlString: The URL for the request
+    ///   - requestType: The HTTP method to use. Defaults to .get
+    ///   - body: The body of the request, if any
+    ///   - type: The expected return type, which must conform to Decodable
+    ///   - completion: A closure to be called with the result of the request
     func request<T: Decodable> (urlString: String,
                                 requestType: RequestType = .get,
                                 body: [String: Any]? = nil,
@@ -91,10 +105,10 @@ class Service: ServiceProtocol {
         }.resume()
     }
     
-    func fetchTweets() -> Timelinemodel? {
+    func fetchTweets() -> TimelineModel? {
         if let path = Bundle.main.path(forResource: Constant.tweetFileName, ofType: "json"),
         let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
-        let dataObject = try? JSONDecoder().decode(Timelinemodel.self, from: data) {
+        let dataObject = try? JSONDecoder().decode(TimelineModel.self, from: data) {
             return dataObject
         }
         return nil
